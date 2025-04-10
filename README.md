@@ -1,6 +1,6 @@
 # Lexer Aritmético en Python
 
-Autores: **Mauricio Emilio Monroy González**, **Amilka Daniela Lopez Aguilar**, **Maria Rivera Gutierres**  
+Autores: **Mauricio Emilio Monroy González**, **Amilka Daniela Lopez Aguilar**, **Maria Rivera Gutierrez**  
 Fecha de entrega: **10-04-2025**
 
 ---
