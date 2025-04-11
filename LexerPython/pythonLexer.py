@@ -2,23 +2,33 @@
 Autores: Mauricio Emilio Monroy González, Amilka Daniela Lopez Aguilar, Maria Rivera Gutierres
 ## Fecha de entrega: 10-4-2025
 
-## Descripción: Lexer Aritmético que reconoce enteros, reales, suma, resta, multiplicación, división, asignación, potencia y variables.
+## Descripción: Lexer para programa en Python que reconoce números, operadores, puntadores, variables, comentarios, palabras clave, y strings.
+    Después de categorizar el token, se imprime en consola y se genera un archivo HTML con el resultado coloreado según su categoría. 
+
+    .keyword { color: goldenrod; font-weight: bold; }
+    .special { color: lightpink; }
+    .variable { color: lightblue; }
+    .operator { color: white; }
+    .number { color: lightgreen; }
+    .comment { color: green; font-style: italic; }
+    .string { color: lightcoral; }
+    .punctuation { color: yellow; }
+    .error { text-decoration: underline wavy red; color: red; }
+    pre { white-space: pre-wrap; } /* Preserva espacios y saltos de línea     
 '''
 #--------------------------
 
 #Tabla de Transición
-#d: digitos, 1: suma, 2: resta, 3: *=^, 4: /, 5: Ee, 6: ., 7:() , 8: A-Z, 9: a-z, 10: _, 11:\n , 12: setX
-
 tabla = [
-    [1, 9, 12, 6, 14, 6, 15, 9, 7, 5, 2, 2, 15, 14],  # State 0
-    [1, 8, 8, 8, 3, 4, 8, 8, 8, 8, 8, 8, 8, 14],      # State 1
-    [1, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 14],      # State 2
-    [3, 8, 8, 8, 14, 4, 8, 8, 8, 8, 8, 8, 8, 14],     # State 3
-    [3, 3, 14, 14, 14, 14, 14, 14, 14, 3, 3, 14, 14, 14],  # State 4
-    [5, 5, 5, 5, 5, 5, 10, 5, 5, 5, 5, 5, 5, 14],     # State 5
-    [6, 14, 11, 6, 14, 6, 11, 11, 14, 14, 14, 14, 11, 14],  # State 6
-    [7, 7, 7, 7, 7, 7, 14, 7, 13, 7, 7, 7, 7, 14],     # State 7
-    [15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15]  # State 15 (Spaces/Newlines)
+    [1, 9, 12, 6, 14, 6, 15, 9, 7, 5, 2, 2, 15, 14],
+    [1, 8, 8, 8, 3, 4, 8, 8, 8, 8, 8, 8, 8, 14], 
+    [1, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 14], 
+    [3, 8, 8, 8, 14, 4, 8, 8, 8, 8, 8, 8, 8, 14],
+    [3, 3, 14, 14, 14, 14, 14, 14, 14, 3, 3, 14, 14, 14],
+    [5, 5, 5, 5, 5, 5, 10, 5, 5, 5, 5, 5, 5, 14],     
+    [6, 14, 11, 6, 14, 6, 11, 11, 14, 14, 14, 14, 11, 14], 
+    [7, 7, 7, 7, 7, 7, 14, 7, 13, 7, 7, 7, 7, 14],
+    [15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15]
 ]
 
 ##Subconjuntos de alfabeto 
@@ -28,7 +38,6 @@ operadores = [
     '/', '**', '%', '==', '+=', '-=', '*=', '//', '<','>', '!=',
     '<=', '>=', '&', '|', '^', 'and', 'not', 'or', '+', '-', '*', '='
 ]
-
 sciNot = 'Ee'
 puntadores = '(){}[],:'
 var = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_'
@@ -38,9 +47,9 @@ palabras = [
  'finally', 'for', 'from', 'global', 'if', 'import', 'in', 'is', 'lambda',
  'nonlocal', 'pass', 'print', 'raise', 'return', 'try', 'while', 'with', 'yield'
 ]
-
 especiales = ['float', 'int', 'len', 'str', 'input', 'True', 'False', 'None']
 comillas = ['"',"'", ':']
+
 # --------------------
 # Definción de funcíon
 def pythonLexer (archivo):
@@ -54,7 +63,7 @@ def pythonLexer (archivo):
     print("|         Token        |         Tip3o         |") 
     print("|---------------------------------------------|")
 
-    # Estructura HTML inicial
+    # Estructura HTML inicial a la cual concatenar resultados formateados
     html_output = '<html><head><style>'
     html_output += '''
     body { background-color: black; color: white; }
@@ -70,8 +79,6 @@ def pythonLexer (archivo):
     pre { white-space: pre-wrap; } /* Preserva espacios y saltos de línea */
     '''
     html_output += '</style></head><body><pre>'
-
-
 
     state = 0
     pos = 0
@@ -112,25 +119,25 @@ def pythonLexer (archivo):
         print("charac", c, "row:", state, ", col: ", col)
         state = tabla[state][col]
         print("state:", state, ", col: ", col, ", c: ", c, ", lex:", lex)
-        if state == 8:  # Caso de enteros
+        if state == 8:  # Caso para números, reales o enteros
             print ("|", lex, "       |        NUMEROS  |")
             html_output += f'<span class="number">{lex}</span>'
             lex = ''
             state = 0
             pos -=1
-        elif state == 9: # Caso de reales
+        elif state == 9: # Manejo de operadores
             print ("|", c, "       |        OPERADORES  |")
             html_output += f'<span class="operator">{c}</span>'
             lex = ''
             state = 0
             #pos -=1
-        elif state == 10:
+        elif state == 10: # Manejo de comentarios
             print ("|", lex, "       |        COMENTARIOS  |")
             html_output += f'<span class="comment">{lex}</span>'
             lex = ''
             state = 0
             pos -=1
-        elif state == 11:
+        elif state == 11: # Manejo de literales: palabras clave o variables
             if(lex in palabras):
                 print ("|", lex, "       |    KEYWORD |")
                 html_output += f'<span class="keyword">{lex}</span>'
@@ -143,13 +150,13 @@ def pythonLexer (archivo):
             lex = ''
             state = 0
             pos -=1
-        elif state == 12:
+        elif state == 12: # Manejo de símbolos especiales
             print ("|", c, "       |       PUNTADORES  |")
             html_output += f'<span class="punctuation">{c}</span>'
             lex = ''
             state = 0
             #pos -=1
-        elif state == 13:
+        elif state == 13: # Manejo de cadenas de texto
             if c in comillas:
                 lex += c  # agrega la comilla final
                 print("|", lex.ljust(20), "|", "STRING".ljust(20), "|")
@@ -172,7 +179,7 @@ def pythonLexer (archivo):
                 print("|", " ".ljust(20), "|", "SPACE".ljust(20), "|")
             lex = ''
             state = 0
-        print("Loop end | state:", state, ", col: ", col, ", c: ", c, ", lex:", lex)
+        #print("Loop end | state:", state, ", col: ", col, ", c: ", c, ", lex:", lex)
         pos += 1  # Avanzar a siguiente índice de string
         if(pos >= len(s)):
             break  
