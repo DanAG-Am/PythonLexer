@@ -34,7 +34,7 @@ palabras = [
   'as', 'assert', 'async', 'await',
  'break', 'class', 'continue', 'def', 'del', 'elif', 'else', 'except',
  'finally', 'for', 'from', 'global', 'if', 'import', 'in', 'is', 'lambda',
- 'nonlocal', 'pass', 'raise', 'return', 'try', 'while', 'with', 'yield'
+ 'nonlocal', 'pass', 'print', 'raise', 'return', 'try', 'while', 'with', 'yield'
 ]
 
 especiales = ['float', 'int', 'len', 'str', 'input', 'True', 'False', 'None']
@@ -51,6 +51,23 @@ def pythonLexer (archivo):
     print("|---------------------------------------------|")
     print("|         Token        |         Tip3o         |") 
     print("|---------------------------------------------|")
+
+    # Estructura HTML inicial
+    html_output = '<html><head><style>'
+    html_output += '''
+    .keyword { color: blue; font-weight: bold; }
+    .special { color: purple; }
+    .variable { color: black; }
+    .operator { color: red; }
+    .number { color: green; }
+    .comment { color: gray; font-style: italic; }
+    .string { color: orange; }
+    .punctuation { color: brown; }
+    '''
+    html_output += '</style></head><body><pre>'
+
+
+
     state = 0
     pos = 0
     lex = ''
@@ -92,26 +109,38 @@ def pythonLexer (archivo):
         #print("state:", state, ", col: ", col, ", c: ", c, ", lex:", lex)
         if state == 8:  # Caso de enteros
             print ("|", lex, "       |        NUMEROS  |")
+            html_output += f'<span class="number">{lex}</span>'
             lex = ''
             state = 0
             pos -=1
         elif state == 9: # Caso de reales
             print ("|", c, "       |        OPERADORES  |")
+            html_output += f'<span class="operator">{c}</span>'
             lex = ''
             state = 0
             #pos -=1
         elif state == 10:
             print ("|", lex, "       |        COMENTARIOS  |")
+            html_output += f'<span class="comment">{lex}</span>'
             lex = ''
             state = 0
             pos -=1
         elif state == 11:
-            print ("|", lex, "       |        TOKEN |")
+            if(lex in palabras):
+                print ("|", lex, "       |    KEYWORD |")
+                html_output += f'<span class="keyword">{lex}</span>'
+            elif(lex in especiales):
+                print("|", lex, "       |    ESPECIAL |")
+                html_output += f'<span class="special">{lex}</span>'
+            else: 
+                print("|", lex, "       |    VARIABLE |")
+                html_output += f'<span class="variable">{lex}</span>'
             lex = ''
             state = 0
             pos -=1
         elif state == 12:
             print ("|", c, "       |       PUNTADORES  |")
+            html_output += f'<span class="punctuation">{c}</span>'
             lex = ''
             state = 0
             #pos -=1
@@ -119,11 +148,11 @@ def pythonLexer (archivo):
             if c in comillas:
                 lex += c  # agrega la comilla final
                 print("|", lex.ljust(20), "|", "STRING".ljust(20), "|")
+                html_output += f'<span class="string">{lex}</span>'
                 lex = ''
                 state = 0
             else:
                 lex += c
-
         elif state == 14:
             lex = ''
             state = 0
@@ -134,8 +163,12 @@ def pythonLexer (archivo):
             break  
         if state != 0: # Concatenar caracter a lexema si es estado intermedio 
             lex += c
-print("|---------------------------------------------|")
+    print("|---------------------------------------------|")
+    html_output += '</pre></body></html>'
+    with open('output.html', 'w') as html_file:
+        html_file.write(html_output)
+
 
 # -----------------------
 
-pythonLexer("prueba.py")
+pythonLexer(r"C:\Users\mauri\OneDrive\Documents\Programacion\Python programs\PythonLexer\LexerPython\prueba.py")
