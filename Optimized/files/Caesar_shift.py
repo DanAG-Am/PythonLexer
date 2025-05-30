@@ -17,6 +17,5 @@ def decrypt() :
         else:
             plaintext += ch
     print("El decriptado es:\n")
-    print("\t\t>>>", plaintext)
 
 decrypt()

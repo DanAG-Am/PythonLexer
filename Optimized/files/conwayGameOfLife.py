@@ -20,7 +20,7 @@ while True:
 
     for y in range(HEIGHT):
         for x in range(WIDTH):
-            print(currentCells[x][y], end='')
+            print(currentCells[x][y])
 
     # Calculate the next step's cells based on current step's cells:
     for x in range(WIDTH):

@@ -19,7 +19,7 @@ while True:  # Keep asking until the player enters a number.
 snailNames = []  # List of the string snail names.
 for i in range(1, numSnailsRacing + 1):
     while True:  # Keep asking until the player enters a valid name.
-        print('Enter snail #' + str(i) + "'s name:")
+        print('Enter snail #' + str(i) + "s name:")
         name = input('> ')
         if len(name) == 0:
             print('Please enter a name.')
