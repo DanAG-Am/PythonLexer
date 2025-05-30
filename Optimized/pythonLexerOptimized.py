@@ -1,7 +1,6 @@
 import os
 from multiprocessing import Process
-
-
+import time 
 
 '''
 Autores: Mauricio Emilio Monroy González, Amilka Daniela Lopez Aguilar, Maria Rivera Gutierres
@@ -44,7 +43,7 @@ operadores = [
 ]
 sciNot = 'Ee'
 puntadores = '(){}[],:'
-var = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_'
+var = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_áéíóúüñÁÉÍÓÚÜÑ'
 palabras = [
   'as', 'assert', 'async', 'await',
  'break', 'class', 'continue', 'def', 'del', 'elif', 'else', 'except',
@@ -199,9 +198,8 @@ def pythonLexer (archivo, output_html='output.html'):
 # Old function call for testing per file
 # pythonLexer(r"C:\Users\mauri\OneDrive\Documents\Programacion\Python programs\PythonLexer\LexerPython\prueba.py")
 
-
+# Función helper
 def procesar_archivo(ruta_py, ruta_html):
-    # Modifica pythonLexer para aceptar el nombre de salida
     pythonLexer(ruta_py, ruta_html)
 
 if __name__ == "__main__":
@@ -212,6 +210,7 @@ if __name__ == "__main__":
     archivos_py = [f for f in os.listdir(folder) if f.endswith(".py")]
     
     procesos = []
+    startTime = time.perf_counter()
     for archivo in archivos_py:
         ruta_py = os.path.join(folder, archivo)
         nombre_html = os.path.splitext(archivo)[0] + ".html"
@@ -222,5 +221,7 @@ if __name__ == "__main__":
     
     for p in procesos:
         p.join()
-    
+        
+    endTime = time.perf_counter()
+    print(f"Tiempo total de procesamiento: {endTime - startTime:.2f} segundos")
     print("All files processed and colored. ~ 100/100 ~ ")
