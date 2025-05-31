@@ -42,22 +42,25 @@ operadores = [
     '<=', '>=', '&', '|', '^', 'and', 'not', 'or', '+', '-', '*', '='
 ]
 sciNot = 'Ee'
-puntadores = '(){}[],:'
-var = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_áéíóúüñÁÉÍÓÚÜÑ'
+puntadores = '(){}[],:.'
+var = '\@ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_"'\
+      'áéíóúüñÁÉÍÓÚÜÑàèìòùâêîôûãõäëïöüÿ¿?!¡'
 palabras = [
   'as', 'assert', 'async', 'await',
- 'break', 'class', 'continue', 'def', 'del', 'elif', 'else', 'except',
+ 'break', 'class', 'continue', 'def', 'elif', 'else', 'except',
  'finally', 'for', 'from', 'global', 'if', 'import', 'in', 'is', 'lambda',
- 'nonlocal', 'pass', 'print', 'raise', 'return', 'try', 'while', 'with', 'yield'
+ 'nonlocal', 'pass', 'print', 'raise', 'return', 'try', 'while', 'with', 'yield',
+ 'append', 'randint',
 ]
-especiales = ['float', 'int', 'len', 'str', 'input', 'True', 'False', 'None']
-comillas = ['"',"'", ':']
+especiales = ['float', 'int', 'len', 'str', 'input', 'True', 'False', 'None', 'append','randit']
+comillas = ['"',"'",":"]
+
 
 # --------------------
 # Definción de funcíon
 def pythonLexer (archivo, output_html='output.html'):
     # Lectura de archivo
-    file = open(archivo, 'r')
+    file = open(archivo, 'r',  encoding='utf-8') #abrir con unicode para solucionar problemas con las tildes que puedan aparecer en maquinas en particular https://stackoverflow.com/questions/491921/unicode-utf-8-reading-and-writing-to-files-in-python
     s = file.read()
     file.close()
     s += '$' 
@@ -203,8 +206,10 @@ def procesar_archivo(ruta_py, ruta_html):
     pythonLexer(ruta_py, ruta_html)
 
 if __name__ == "__main__":
-    # 1. Carpeta a analizar
-    folder = r"C:\Users\mauri\OneDrive\Documents\Programacion\Python programs\PythonLexer\Optimized\files"
+    # 1. Carpeta a analizar, utilizamos paths absolutos para independencia de maquina 
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    folder = os.path.join(script_dir, "files")
+
     
     # 2. Listar todos los archivos .py
     archivos_py = [f for f in os.listdir(folder) if f.endswith(".py")]
